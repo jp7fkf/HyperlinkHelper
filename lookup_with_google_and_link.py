@@ -13,6 +13,7 @@ try:
 	from urllib.request import Request, urlopen
 	from urllib.error import URLError
 	from urllib.parse import urlencode
+	import html.parser
 except ImportError:
 	# Python 2 (ST2)
 	from urllib2 import Request, URLError, urlopen
@@ -35,6 +36,7 @@ class LookupWithGoogleAndLinkCommand(sublime_plugin.TextCommand):
 			decoded_content = content.decode(chardet.detect(content)['encoding'])
 			title = re.search(r"<title>([^<>]*)</title>", decoded_content, re.I).group(1)
 			title = title.strip()
+			title = html.parser.HTMLParser().unescape(title)
 			return url, title, phrase
 		except URLError as e:
 			sublime.error_message("Error fetching Google search result: %s" % str(e))

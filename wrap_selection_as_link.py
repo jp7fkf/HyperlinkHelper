@@ -11,6 +11,7 @@ import chardet, pystache
 try:
 	# Python 3 (ST3)
 	from urllib.request import Request, urlopen
+	import html.parser
 except ImportError:
 	# Python 2 (ST2)
 	from urllib2 import Request, urlopen
@@ -31,6 +32,7 @@ class WrapSelectionAsLinkCommand(sublime_plugin.TextCommand):
 			decoded_content = content.decode(chardet.detect(content)['encoding'])
 			title = re.search(r"<title>([^<>]*)</title>", decoded_content, re.I).group(1)
 			title = title.strip()
+			title = html.parser.HTMLParser().unescape(title)
 			return title
 		except Exception as e:
 			sublime.error_message("Error fetching page title: %s" % str(e))
