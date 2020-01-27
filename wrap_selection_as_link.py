@@ -25,12 +25,12 @@ class WrapSelectionAsLinkCommand(sublime_plugin.TextCommand):
 
 	def get_url_title(self, url):
 		try:
-			req = Request(url, headers={'User-Agent' : "Sublime Text 2 Hyperlink Helper"}) 
+			req = Request(url, headers={'User-Agent' : "Sublime Text 2 Hyperlink Helper"})
 			f = urlopen(req)
 			url = f.geturl()
 			content = f.read()
 			decoded_content = content.decode(chardet.detect(content)['encoding'])
-			title = re.search(r"<title>([^<>]*)</title>", decoded_content, re.I).group(1)
+			title = re.search(r"<title .*>([^<>]*)</title>", decoded_content, re.I).group(1)
 			title = title.strip()
 			title = html.parser.HTMLParser().unescape(title)
 			return title
@@ -46,7 +46,7 @@ class WrapSelectionAsLinkCommand(sublime_plugin.TextCommand):
 		else:
 			# convert Amazon links (possibly containing affiliate codes) to canonical URLs
 			match = re.match(r"^https?://www.(amazon.(?:com|co.uk|co.jp|ca|fr|de))/.+?/([A-Z0-9]{10})/[-a-zA-Z0-9_./%?=&]+$", text)
-			if match: 
+			if match:
 				return "http://%s/dp/%s" % (match.group(1), match.group(2))
 			else:
 				# pass through other URLs untouched
@@ -81,7 +81,7 @@ class WrapSelectionAsLinkCommand(sublime_plugin.TextCommand):
 		# add nonempty selections back in
 		for s in nonempty_sels:
 			self.view.sel().add(s)
-		
+
 		txt = sublime.get_clipboard().strip()
 		url = self.make_url(txt)
 
