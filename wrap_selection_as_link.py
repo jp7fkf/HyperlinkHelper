@@ -30,7 +30,7 @@ class WrapSelectionAsLinkCommand(sublime_plugin.TextCommand):
 			url = f.geturl()
 			content = f.read()
 			decoded_content = content.decode(chardet.detect(content)['encoding'])
-			title = re.search(r"<title .*>([^<>]*)</title>", decoded_content, re.I).group(1)
+			title = re.search(r"<title.*>([^<>]*)</title>", decoded_content, re.I).group(1)
 			title = title.strip()
 			title = html.parser.HTMLParser().unescape(title)
 			return title
