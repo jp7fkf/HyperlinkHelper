@@ -38,7 +38,7 @@ class WrapSelectionAsLinkCommand(sublime_plugin.TextCommand):
 
 	def get_url_title(self, url):
 		try:
-			req = Request(url)# , headers={'User-Agent' : "Sublime Text 2 Hyperlink Helper"})
+			req = Request(url , headers={'User-Agent' : "Mozilla/5.0"})
 			f = urlopen(req)
 			url = f.geturl()
 			content = f.read()
