@@ -16,6 +16,19 @@ except ImportError:
 	# Python 2 (ST2)
 	from urllib2 import Request, urlopen
 
+def guess_charset(data):
+	f = lambda d, enc: d.decode(enc) and enc
+
+	try: return f(data, 'utf-8')
+	except: pass
+	try: return f(data, 'shift-jis')
+	except: pass
+	try: return f(data, 'euc-jp')
+	except: pass
+	try: return f(data, 'iso2022-jp')
+	except: pass
+	return None
+
 def preemptive_imports():
 	""" needed to ensure ability to import these classes later within functions, due to the way ST2 loads plug-in modules """
 	from chardet import universaldetector
@@ -25,11 +38,11 @@ class WrapSelectionAsLinkCommand(sublime_plugin.TextCommand):
 
 	def get_url_title(self, url):
 		try:
-			req = Request(url, headers={'User-Agent' : "Sublime Text 2 Hyperlink Helper"})
+			req = Request(url)# , headers={'User-Agent' : "Sublime Text 2 Hyperlink Helper"})
 			f = urlopen(req)
 			url = f.geturl()
 			content = f.read()
-			decoded_content = content.decode(chardet.detect(content)['encoding'])
+			decoded_content = content.decode(guess_charset(content))
 			title = re.search(r"<title.*>([^<>]*)</title>", decoded_content, re.I).group(1)
 			title = title.strip()
 			title = html.parser.HTMLParser().unescape(title)
