@@ -111,6 +111,6 @@ class WrapSelectionAsLinkCommand(sublime_plugin.TextCommand):
 			if not s.empty():
 				txt = self.view.substr(s)
 				link = pystache.render(self.view.settings().get('hyperlink_helper_link_format'), {'url': url, 'title?': title, 'input': txt})
-				self.view.replace(edit, s, link)
+				self.view.replace(edit, s, link+'\n')
 				pos = s.begin() + len(link)
 				self.view.sel().add(sublime.Region(pos, pos))
